@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Top Rated Jobs Marketplace — Split Layout</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg-left:#e9e2dc;
+      --text:#111;
+      --muted:#333;
+      --accent:#2fa79a;
+      --right:#0b0b0c;
+      --right2:#060607;
+      --ring:#8b8b90;
+      --ring2:#3b3b40;
+
+      --container-pad: clamp(18px, 3.2vw, 56px);
+      --nav-gap: clamp(14px, 3.5vw, 64px);
+      --h1: clamp(44px, 5.8vw, 88px);
+      --h1-line: 0.95;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      background:#000;
+    }
+
+    /* Split layout */
+    .split{
+      min-height:100vh;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .left{
+      background:var(--bg-left);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: var(--container-pad);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .left-inner{
+      width:min(560px, 100%);
+      text-align:center;
+    }
+
+    .brand{
+      position:absolute;
+      top: 22px;
+      left: var(--container-pad);
+      font-weight: 500;
+      letter-spacing: .12em;
+      font-size: 28px;
+      opacity:.9;
+      user-select:none;
+    }
+
+    h1{
+      margin: 0 0 18px;
+      font-size: var(--h1);
+      line-height: var(--h1-line);
+      letter-spacing: -0.03em;
+      font-weight: 800;
+      color:#101010;
+    }
+
+    .sub{
+      margin: 0 0 26px;
+      font-size: clamp(18px, 1.6vw, 26px);
+      color: #1f1f1f;
+      opacity:.9;
+      font-weight: 500;
+    }
+
+    .cta{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap: 10px;
+      padding: 18px 34px;
+      border-radius: 999px;
+      border: 0;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      font-size: 14px;
+      cursor:pointer;
+      box-shadow: 0 12px 30px rgba(47,167,154,.26);
+      transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+    }
+    .cta:hover{
+      transform: translateY(-1px);
+      box-shadow: 0 18px 40px rgba(47,167,154,.32);
+      filter: brightness(1.02);
+    }
+    .cta:active{
+      transform: translateY(0px) scale(.99);
+    }
+
+    /* Right side */
+    .right{
+      background: radial-gradient(1200px 700px at 20% 20%, var(--right) 0%, var(--right2) 70%, #000 100%);
+      position:relative;
+      overflow:hidden;
+      padding: var(--container-pad);
+      color:#fff;
+    }
+
+    .nav{
+      position:absolute;
+      top: 26px;
+      right: var(--container-pad);
+      display:flex;
+      gap: var(--nav-gap);
+      align-items:center;
+      z-index:3;
+      user-select:none;
+    }
+    .nav a{
+      color: rgba(255,255,255,.88);
+      text-decoration:none;
+      font-weight: 600;
+      letter-spacing: .14em;
+      font-size: 14px;
+      text-transform: uppercase;
+      padding: 8px 0;
+      position:relative;
+      transition: opacity .2s ease;
+    }
+    .nav a:hover{ opacity:1; }
+    .nav a::after{
+      content:"";
+      position:absolute;
+      left:0; bottom:0;
+      width:0%;
+      height:2px;
+      background: rgba(255,255,255,.65);
+      transition: width .22s ease;
+    }
+    .nav a:hover::after{ width:100%; }
+
+    .orb-wrap{
+      position:absolute;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      pointer-events:none;
+    }
+
+    /* The “radial tick” graphic */
+    svg#orb{
+      width:min(74vmin, 640px);
+      height:auto;
+      opacity:.92;
+      filter: drop-shadow(0 14px 26px rgba(0,0,0,.55));
+      transform: translateY(10px);
+    }
+
+    /* subtle vignette overlay */
+    .right::after{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background:
+        radial-gradient(60% 70% at 60% 50%, rgba(255,255,255,0.06), rgba(0,0,0,0.0) 50%),
+        radial-gradient(80% 80% at 40% 55%, rgba(0,0,0,0.0), rgba(0,0,0,0.65) 72%, rgba(0,0,0,0.9) 100%);
+      pointer-events:none;
+    }
+
+    /* Modal */
+    .modal-backdrop{
+      position:fixed;
+      inset:0;
+      background: rgba(0,0,0,.55);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding: 18px;
+      z-index:50;
+    }
+    .modal{
+      width:min(560px, 100%);
+      background: rgba(255,255,255,.96);
+      color:#111;
+      border-radius: 18px;
+      padding: 22px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.45);
+      position:relative;
+    }
+    .modal h2{
+      margin: 0 0 10px;
+      font-size: 22px;
+      letter-spacing: -0.02em;
+    }
+    .modal p{
+      margin: 0 0 18px;
+      line-height: 1.55;
+      color:#222;
+    }
+    .modal .row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .modal input{
+      flex:1 1 240px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(0,0,0,.12);
+      outline: none;
+      font-size: 15px;
+    }
+    .modal input:focus{
+      border-color: rgba(47,167,154,.6);
+      box-shadow: 0 0 0 4px rgba(47,167,154,.18);
+    }
+    .modal .btn{
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 0;
+      background: var(--accent);
+      color:#fff;
+      font-weight: 700;
+      cursor:pointer;
+      white-space:nowrap;
+    }
+    .close{
+      position:absolute;
+      top: 12px;
+      right: 14px;
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      border: 0;
+      cursor:pointer;
+      background: rgba(0,0,0,.06);
+      color:#111;
+      font-size: 18px;
+      display:grid;
+      place-items:center;
+    }
+
+    /* Mobile */
+    @media (max-width: 900px){
+      .split{ grid-template-columns: 1fr; }
+      .right{ min-height: 52vh; }
+      .brand{ font-size: 22px; }
+      .nav{
+        right: 16px;
+        gap: clamp(12px, 4vw, 28px);
+      }
+    }
+
+    /* Reduce motion */
+    @media (prefers-reduced-motion: reduce){
+      .cta, .nav a::after { transition:none; }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="split">
+    <!-- LEFT -->
+    <section class="left" aria-label="Hero Left">
+      <div class="brand">AHEAD</div>
+
+      <div class="left-inner">
+        <h1>Top Rated Jobs<br/>Marketplace</h1>
+        <p class="sub">Get the Job</p>
+
+        <button class="cta" id="applyBtn" type="button" aria-haspopup="dialog" aria-controls="applyModal">
+          APPLY TODAY
+          <span aria-hidden="true">→</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- RIGHT -->
+    <section class="right" aria-label="Hero Right">
+      <nav class="nav" aria-label="Primary">
+        <a href="#about" data-route="about">ABOUT</a>
+        <a href="#apply" data-route="apply">APPLY</a>
+        <a href="#login" data-route="login">LOGIN</a>
+        <a href="#contact" data-route="contact">CONTACT</a>
+      </nav>
+
+      <div class="orb-wrap" aria-hidden="true">
+        <!-- Radial "ticks" generated by JS -->
+        <svg id="orb" viewBox="-400 -400 800 800" role="img" aria-label="Decorative radial graphic">
+          <defs>
+            <radialGradient id="fade" cx="50%" cy="50%" r="60%">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="0.18"/>
+              <stop offset="65%" stop-color="#ffffff" stop-opacity="0.10"/>
+              <stop offset="100%" stop-color="#ffffff" stop-opacity="0.00"/>
+            </radialGradient>
+          </defs>
+
+          <!-- soft center glow -->
+          <circle r="210" fill="url(#fade)" opacity="0.45"></circle>
+
+          <!-- Inner hole -->
+          <circle r="110" fill="#0a0a0b"></circle>
+
+          <!-- tick groups inserted here -->
+          <g id="ticksOuter"></g>
+          <g id="ticksMid"></g>
+          <g id="ticksInner"></g>
+        </svg>
+      </div>
+    </section>
+  </main>
+
+  <!-- SIMPLE MODAL -->
+  <div class="modal-backdrop" id="applyModal" role="dialog" aria-modal="true" aria-labelledby="applyTitle">
+    <div class="modal">
+      <button class="close" id="closeModal" aria-label="Close">✕</button>
+      <h2 id="applyTitle">Apply Today</h2>
+      <p>Drop your email and we’ll send the next steps (this is a front-end demo — no data is actually sent).</p>
+      <div class="row">
+        <input id="email" type="email" placeholder="you@example.com" autocomplete="email" />
+        <button class="btn" id="submitEmail" type="button">Send</button>
+      </div>
+      <p id="status" style="margin-top:12px; font-size:14px; color:#2a2a2a;"></p>
+    </div>
+  </div>
+
+  <script>
+    // --- Build the radial tick graphic (like the screenshot style) ---
+    const mkTicks = (groupEl, count, r1, r2, opacity) => {
+      for (let i = 0; i < count; i++) {
+        const angle = (i / count) * Math.PI * 2;
+        const x1 = Math.cos(angle) * r1;
+        const y1 = Math.sin(angle) * r1;
+        const x2 = Math.cos(angle) * r2;
+        const y2 = Math.sin(angle) * r2;
+
+        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        line.setAttribute("x1", x1.toFixed(2));
+        line.setAttribute("y1", y1.toFixed(2));
+        line.setAttribute("x2", x2.toFixed(2));
+        line.setAttribute("y2", y2.toFixed(2));
+        line.setAttribute("stroke", "#d7d7dc");
+        line.setAttribute("stroke-opacity", opacity);
+        line.setAttribute("stroke-width", "5");
+        line.setAttribute("stroke-linecap", "round");
+        groupEl.appendChild(line);
+      }
+    };
+
+    mkTicks(document.getElementById("ticksOuter"), 72, 240, 320, 0.32);
+    mkTicks(document.getElementById("ticksMid"),   60, 185, 245, 0.28);
+    mkTicks(document.getElementById("ticksInner"), 52, 130, 175, 0.24);
+
+    // --- Gentle rotation based on pointer (subtle, like premium landing pages) ---
+    const orb = document.getElementById("orb");
+    let targetRX = 0, targetRY = 0;
+    let curRX = 0, curRY = 0;
+
+    const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+
+    window.addEventListener("pointermove", (e) => {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      const nx = (e.clientX / w) * 2 - 1;
+      const ny = (e.clientY / h) * 2 - 1;
+      targetRY = clamp(nx * 7, -8, 8);  // rotateY
+      targetRX = clamp(-ny * 6, -7, 7); // rotateX
+    }, { passive: true });
+
+    function animate() {
+      curRX += (targetRX - curRX) * 0.06;
+      curRY += (targetRY - curRY) * 0.06;
+      orb.style.transform = `translateY(10px) rotateX(${curRX}deg) rotateY(${curRY}deg)`;
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    // --- Simple routing + modal ---
+    const modal = document.getElementById("applyModal");
+    const applyBtn = document.getElementById("applyBtn");
+    const closeBtn = document.getElementById("closeModal");
+    const emailEl = document.getElementById("email");
+    const submitBtn = document.getElementById("submitEmail");
+    const statusEl = document.getElementById("status");
+
+    const openModal = () => {
+      modal.style.display = "flex";
+      statusEl.textContent = "";
+      setTimeout(() => emailEl.focus(), 50);
+    };
+    const closeModal = () => {
+      modal.style.display = "none";
+    };
+
+    applyBtn.addEventListener("click", openModal);
+    closeBtn.addEventListener("click", closeModal);
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && modal.style.display === "flex") closeModal();
+    });
+
+    // Nav behavior (demo only)
+    document.querySelectorAll(".nav a").forEach(a => {
+      a.addEventListener("click", (e) => {
+        e.preventDefault();
+        const route = a.dataset.route;
+        if (route === "apply") openModal();
+        else {
+          statusEl.textContent = "";
+          alert(`${route.toUpperCase()} clicked (demo link)`);
+        }
+      });
+    });
+
+    // Fake submit
+    submitBtn.addEventListener("click", () => {
+      const v = (emailEl.value || "").trim();
+      if (!v || !/^\S+@\S+\.\S+$/.test(v)) {
+        statusEl.textContent = "Please enter a valid email address.";
+        return;
+      }
+      statusEl.textContent = "Thanks! We’ll be in touch shortly.";
+      emailEl.value = "";
+    });
+  </script>
+</body>
+</html>
